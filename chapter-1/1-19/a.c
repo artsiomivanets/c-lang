@@ -1,41 +1,18 @@
-/*
- * I'm going to change 80 characters to 10 characters
- * to make it easier to test
- *
- */
-
 #include <stdio.h>
 #define MAXLINE 1000
 
 int mgetline(char line[], int maxline);
-int remove_blanks(char line[]);
+void reverse(char line[], int length);
 
 int main() {
-  int len, len_without_blanks;
+  int len;
   char line[MAXLINE];
 
   while ((len = mgetline(line, MAXLINE)) > 0) {
-    len_without_blanks = remove_blanks(line);
-    if (len_without_blanks > 0) {
-      printf("%s\n", line);
-    }
+    reverse(line, len);
+    printf("%s\n", line);
   }
   return 0;
-}
-
-int remove_blanks(char s[]) {
-  int i, pos;
-  i = pos = 0;
-
-  while (s[i] != '\0') {
-    if (s[i] != '\t' && s[i] != ' ' && s[i] != '\n') {
-      s[pos] = s[i];
-      pos++;
-    }
-    i++;
-  }
-  s[pos] = '\0';
-  return pos;
 }
 
 int mgetline(char s[], int lim) {
@@ -48,4 +25,18 @@ int mgetline(char s[], int lim) {
   }
   s[i] = '\0';
   return i;
+}
+
+void reverse(char s[], int length) {
+  char temp;
+  if (s[length - 1] == '\n') {
+    s[length - 1] = '\0';
+    --length;
+  }
+  for (int i = 0; i < length; i++) {
+    --length;
+    temp = s[i];
+    s[i] = s[length];
+    s[length] = temp;
+  }
 }
