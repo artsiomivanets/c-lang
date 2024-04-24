@@ -26,8 +26,16 @@ int getword(char *word, int lim);
 int isvariable(char *word);
 void pretty_print(struct tnode *);
 
-int main(int argc, char *argv[]) {
+static int compare_amount;
+
+int contains(char **lineptr, char *substr, int amount);
+
+int main(int argc, char **argv) {
   char word[MAXWORD];
+  int amount;
+  if (contains(argv, "-n", argc))
+    compare_amount = atoi(argv[2]);
+
   struct tnode *root;
   root = NULL;
 
@@ -49,7 +57,7 @@ struct tnode *addtree(char *word, struct tnode *p) {
     return p;
   }
 
-  cond = strncmp(word, p->word, 1);
+  cond = strncmp(word, p->word, compare_amount);
 
   if (cond < 0)
     p->left = addtree(word, p->left);
@@ -59,6 +67,14 @@ struct tnode *addtree(char *word, struct tnode *p) {
     p->group = addtree(word, p->group);
 
   return p;
+}
+
+int contains(char **lineptr, char *substr, int amount) {
+  for (int n = 0; n < amount; n++) {
+    if (strcmp(*(lineptr + n), substr) == 0)
+      return 1;
+  }
+  return 0;
 }
 
 int isvariable(char *word) {
@@ -85,6 +101,7 @@ void pretty_print(struct tnode *tree) {
     if (tree->group) {
       printf("%s%s:\n", "variables group for ", tree->word);
       print_group(tree->group);
+      printf("%s\n", "-----------");
     } else {
       printf("%s\n", tree->word);
     }
